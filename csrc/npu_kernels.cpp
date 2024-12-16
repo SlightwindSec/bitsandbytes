@@ -5,12 +5,6 @@ using namespace AscendC;
 
 constexpr int32_t BUFFER_NUM = 1;
 
-constexpr half Q_COFF_0 = -0.377685546875;
-constexpr half Q_COFF_1 = -3.193359375;
-constexpr half Q_COFF_2 = 0.583984375;
-constexpr half Q_COFF_3 = 6.02734375;
-constexpr half Q_COFF_4 = 1.9560546875;
-constexpr half Q_COFF_5 = 7.08984375;
 
 #define CEIL32(num) (((num) + 32 - 1) / 32 * 32)
 #define CEIL_BASE(num, base) (((num) + (base) - 1) / (base) * (base))

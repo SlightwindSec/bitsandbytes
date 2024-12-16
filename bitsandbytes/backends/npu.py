@@ -100,7 +100,11 @@ class NPUBackend(Backend):
         if compress_statistics:
             raise NotImplementedError("compress_statistics is not implemented.")
         if blocksize is None:
-            blocksize = 128
+            blocksize = 64
+        
+        total_blocks = A.numel() // blocksize
+        chunks = 8 if A.numel() > 1024 * 1024 else 1
+        chunksize = (total_blocks + chunks - 1) // chunks
 
         prev_device = torch.npu.current_device()
         torch.npu.set_device(A.device)
@@ -124,12 +128,27 @@ class NPUBackend(Backend):
                 1.0,
             ]
             data = torch.tensor(data, device="npu", dtype=torch.float32).view(1, -1)
-            absmax = A.view(-1, blocksize).abs().max(dim=1, keepdim=True).values
-            a = A.view(-1, blocksize) / absmax.float()
-            diff = torch.abs(a.unsqueeze(-1) - data)
-            out = (torch.argmin(diff, dim=-1) + 8) % 16
-            out = out.reshape(-1, 2)
-            out = (out[:, 0] + out[:, 1] * 16).to(torch.uint8)
+            chunks_absmax = []
+            chunks_out = []
+
+            for i in range(chunks):
+                start = i * chunksize * blocksize
+                end = min((i + 1) * chunksize * blocksize, A.numel())
+                chunk_data = A.view(-1)[start:end].view(-1, blocksize)
+
+                absmax = chunk_data.abs().max(dim=1, keepdim=True).values
+                chunks_absmax.append(absmax)
+
+                a = chunk_data / absmax.float()
+                diff = torch.abs(a.unsqueeze(-1) - data)
+                out = (torch.argmin(diff, dim=-1) + 8) % 16
+
+                out = out.reshape(-1, 2)
+                out = (out[:, 0] + out[:, 1] * 16).to(torch.uint8)
+                chunks_out.append(out)
+
+            absmax = torch.cat(chunks_absmax, dim=0)
+            out = torch.cat(chunks_out, dim=0)
         else:
             raise ValueError(f"Blockwise quantization only supports 16/32-bit floats, but got {A.dtype}")
         assert_on_npu([A, absmax, out])
@@ -157,7 +176,7 @@ class NPUBackend(Backend):
         quant_type: Literal["fp4", "nf4"] = "nf4",
     ) -> torch.Tensor:
         if blocksize is None:
-            blocksize = 128
+            blocksize = 64
         supported_blocksizes = [2048, 4096, 1024, 512, 256, 128, 64]
         if blocksize not in supported_blocksizes:
             raise ValueError(
