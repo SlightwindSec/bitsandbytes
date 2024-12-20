@@ -18,7 +18,6 @@ from .autograd._functions import (
     mm_cublas,
 )
 from .backends import backends, register_backend
-from .backends.cpu import CPUBackend
 from .backends.npu import NPUBackend
 from .cextension import lib
 
@@ -29,9 +28,6 @@ supported_torch_devices = {
     "xpu",  # Intel GPU
     "cpu",
 }
-
-# Always register the CPU backend.
-register_backend("cpu", CPUBackend())
 
 # Register either CUDA or ROCm backend, if available.
 # Only one of these backends can be used at a time, since the torch.device semantics are

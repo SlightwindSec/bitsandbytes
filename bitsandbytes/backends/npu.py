@@ -97,11 +97,10 @@ class NPUBackend(Backend):
     ) -> Tuple[torch.Tensor, QuantState]:
         if quant_type not in ["nf4"]:
             raise NotImplementedError(f"4-bit quantization data type {quant_type} is not implemented.")
-        if compress_statistics:
-            raise NotImplementedError("compress_statistics is not implemented.")
+
         if blocksize is None:
             blocksize = 64
-        
+
         total_blocks = A.numel() // blocksize
         chunks = 8 if A.numel() > 1024 * 1024 else 1
         chunksize = (total_blocks + chunks - 1) // chunks

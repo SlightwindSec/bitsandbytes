@@ -38,8 +38,7 @@ def write_version_file(version, filepath="bitsandbytes/_version.py"):
 
 
 def get_version_and_write_to_file():
-    latest_semver_tag = get_latest_semver_tag()
-    version = latest_semver_tag if is_git_tagged_commit() else f"{latest_semver_tag}.dev+{get_git_commit_hash()}"
+    version = get_latest_semver_tag()
     write_version_file(version)
     return version
 

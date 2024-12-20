@@ -388,14 +388,7 @@ def create_quantile_map(A, total_bits=8):
 
 
 def get_special_format_str():
-    if not torch.cuda.is_available():
-        return "col_turing"
-    major, _minor = torch.cuda.get_device_capability()
-    if major <= 7:
-        return "col_turing"
-    if major == 8:
-        return "col_ampere"
-    return "col_turing"
+    return None
 
 
 def is_on_gpu(tensors):

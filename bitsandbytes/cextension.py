@@ -94,13 +94,6 @@ class CudaBNBNativeLibrary(BNBNativeLibrary):
 
 def get_native_library() -> BNBNativeLibrary:
     binary_path = PACKAGE_DIR / f"libbitsandbytes_cpu{DYNAMIC_LIBRARY_SUFFIX}"
-    cuda_specs = get_cuda_specs()
-    if cuda_specs:
-        cuda_binary_path = get_cuda_bnb_library_path(cuda_specs)
-        if cuda_binary_path.exists():
-            binary_path = cuda_binary_path
-        else:
-            logger.warning("Could not find the bitsandbytes %s binary at %r", BNB_BACKEND, cuda_binary_path)
     npu_specs = get_npu_specs()
     if npu_specs:
         binary_path = PACKAGE_DIR / f"libbitsandbytes_npu{DYNAMIC_LIBRARY_SUFFIX}"
