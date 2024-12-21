@@ -1,4 +1,4 @@
-# `bitsandbytes-npu-beta` (Ascend NPU branch)
+# bitsandbytes-npu-beta (Ascend NPU branch)
 
 ## Official repository
 

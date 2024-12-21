@@ -54,14 +54,14 @@ class BinaryDistribution(Distribution):
 
 
 setup(
-    name="bitsandbytes",
+    name="bitsandbytes-npu-beta",
     version=get_version_and_write_to_file(),
     author="Tim Dettmers",
     author_email="dettmers@cs.washington.edu",
     description="k-bit optimizers and matrix multiplication routines.",
     license="MIT",
     keywords="gpu optimizers optimization 8-bit quantization compression",
-    url="https://github.com/TimDettmers/bitsandbytes",
+    url="https://github.com/SlightwindSec/bitsandbytes",
     packages=find_packages(),
     package_data={"": libs},
     install_requires=["torch", "numpy"],
