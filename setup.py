@@ -38,7 +38,7 @@ def write_version_file(version, filepath="bitsandbytes/_version.py"):
 
 
 def get_version_and_write_to_file():
-    version = get_latest_semver_tag()
+    version = "0.45.1"
     write_version_file(version)
     return version
 
@@ -60,7 +60,7 @@ setup(
     author_email="dettmers@cs.washington.edu",
     description="k-bit optimizers and matrix multiplication routines.",
     license="MIT",
-    keywords="gpu optimizers optimization 8-bit quantization compression",
+    keywords="npu nf4 8-bit quantization",
     url="https://github.com/SlightwindSec/bitsandbytes",
     packages=find_packages(),
     package_data={"": libs},
