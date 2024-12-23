@@ -1,4 +1,5 @@
 #include <iostream>
+#include <math.h>
 #include "acl/acl.h"
 #include "tiling/platform/platform_ascendc.h"
 #include "npu_ops.h"

@@ -17,6 +17,17 @@
 // div and Round Up
 #define DIVCEIL(num, div) (((div) == 0) ? 0 : (((num) + (div)-1) / (div)))
 
+const uint32_t UB_RESERVED_BUFF = 8 * 1024;
+const uint32_t MAX_CORE_NUMBER = 64;
+const uint32_t L2_CACHE_LINE_SIZE = 512;
+const uint32_t UB_MIN_BLOCK_SIZE = 32;
+const uint32_t MAX_BLOCK_COUNT = 4095;
+const uint32_t MAX_BLOCK_LEN = 65535 * 32;
+const uint32_t MAX_UINT32 = 4294967295;
+const uint16_t DISCONTINE_COPY_MAX_BLOCKCNT = 4095;
+const uint16_t DISCONTINE_COPY_MAX_BLOCKLEN = 65535;
+const uint16_t DISCONTINE_COPY_MAX_STRIDE = 65535;
+
 // row_col_quant
 struct OutlierTilingParam {
     uint64_t colLen = 0;

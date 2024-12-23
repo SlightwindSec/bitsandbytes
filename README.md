@@ -10,6 +10,11 @@ https://github.com/bitsandbytes-foundation/bitsandbytes/
 pip install bitsandbytes-npu-beta
 ```
 
+
+```shell
+import bitsandbytes
+```
+
 ## License
 
 `bitsandbytes` is MIT licensed.
