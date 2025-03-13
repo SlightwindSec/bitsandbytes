@@ -14,18 +14,21 @@ template <typename T, uint32_t TypeMode>
 class KernelDequantizeBlockwiseNf4 {
 public:
     __aicore__ inline KernelDequantizeBlockwiseNf4() {}
-
-    __aicore__ inline void Init(GM_ADDR A, GM_ADDR absmax, GM_ADDR out, GM_ADDR tilingDevice, TPipe &pipe)
+    __aicore__ inline void Init(
+        GM_ADDR A,
+        GM_ADDR absmax,
+        GM_ADDR out,
+        uint32_t blocksize,
+        uint32_t coreNum,
+        uint32_t singleCoreNumel,
+        uint32_t singleCoreNumelTail,
+        uint32_t numel,
+        uint32_t ubSize,
+        TPipe &pipe
+    )
     {
         ASSERT(GetBlockNum() != 0 && "block dim can not be zero!");
-        auto *tiling_data = reinterpret_cast<__gm__ BlockwiseNf4TilingData *>(tilingDevice);
-        this->blocksize = tiling_data->blocksize;
-        uint32_t coreNum = tiling_data->coreNum;
-        uint32_t singleCoreNumel = tiling_data->singleCoreNumel;
-        uint32_t singleCoreNumelTail = tiling_data->singleCoreNumelTail;
-        uint32_t numel = tiling_data->numel;
-        uint32_t ubSize = tiling_data->ubSize;
-        uint32_t blockIdx = (uint32_t)GetBlockIdx();
+        this->blocksize = blocksize;
         if (coreNum - blockIdx == 1) {
             this->CurCoreFP16Num = singleCoreNumelTail;
         } else {
@@ -1280,19 +1283,39 @@ namespace row_col_stats_fp16_kernel {
 
 extern "C" {
 
-__global__ __aicore__ void dequantize_blockwise_fp32_nf4(GM_ADDR A, GM_ADDR absmax, GM_ADDR out, GM_ADDR tiling)
+__global__ __aicore__ void dequantize_blockwise_fp32_nf4(
+    GM_ADDR A,
+    GM_ADDR absmax,
+    GM_ADDR out,
+    uint32_t blocksize,
+    uint32_t coreNum,
+    uint32_t singleCoreNumel,
+    uint32_t singleCoreNumelTail,
+    uint32_t numel,
+    uint32_t ubSize
+)
 {
     TPipe pipe;
     KernelDequantizeBlockwiseNf4<float32_t, 1> op;
-    op.Init(A, absmax, out, tiling, pipe);
+    op.Init(A, absmax, out, blocksize, coreNum, singleCoreNumel, singleCoreNumelTail, numel, ubSize, pipe);
     op.Process();
 }
 
-__global__ __aicore__ void dequantize_blockwise_fp16_nf4(GM_ADDR A, GM_ADDR absmax, GM_ADDR out, GM_ADDR tiling)
+__global__ __aicore__ void dequantize_blockwise_fp16_nf4(
+    GM_ADDR A,
+    GM_ADDR absmax,
+    GM_ADDR out,
+    uint32_t blocksize,
+    uint32_t coreNum,
+    uint32_t singleCoreNumel,
+    uint32_t singleCoreNumelTail,
+    uint32_t numel,
+    uint32_t ubSize
+)
 {
     TPipe pipe;
     KernelDequantizeBlockwiseNf4<half, 2> op;
-    op.Init(A, absmax, out, tiling, pipe);
+    op.Init(A, absmax, out, blocksize, coreNum, singleCoreNumel, singleCoreNumelTail, numel, ubSize, pipe);
     op.Process();
 }
 

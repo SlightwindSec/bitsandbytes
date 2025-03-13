@@ -40,15 +40,35 @@ void dequantizeBlockwiseNf4(uint8_t *A, uint8_t *absmax, uint8_t *out, uint32_t 
     if (error != 0) {
         printf("An error occurred.\n");
     }
-    uint8_t *tilingDevice = nullptr;
-    aclrtMalloc((void **)&tilingDevice, tilingSize, ACL_MEM_MALLOC_NORMAL_ONLY);
-    aclrtMemcpyAsync((void *)tilingDevice, tilingSize, tilingHost, tilingSize, ACL_MEMCPY_HOST_TO_DEVICE, stream);
     if (type_mode == 1) {
-        ACLRT_LAUNCH_KERNEL(dequantize_blockwise_fp32_nf4)(blockDim, stream, A, absmax, out, tilingDevice);
+        ACLRT_LAUNCH_KERNEL(dequantize_blockwise_fp32_nf4)(
+            blockDim,
+            stream,
+            A,
+            absmax,
+            out,
+            tilingHost->blocksize,
+            tilingHost->coreNum,
+            tilingHost->singleCoreNumel,
+            tilingHost->singleCoreNumelTail,
+            tilingHost->numel,
+            tilingHost->ubSize
+        );
     } else if (type_mode == 2) {
-        ACLRT_LAUNCH_KERNEL(dequantize_blockwise_fp16_nf4)(blockDim, stream, A, absmax, out, tilingDevice);
+        ACLRT_LAUNCH_KERNEL(dequantize_blockwise_fp16_nf4)(
+            blockDim,
+            stream,
+            A,
+            absmax,
+            out,
+            tilingHost->blocksize,
+            tilingHost->coreNum,
+            tilingHost->singleCoreNumel,
+            tilingHost->singleCoreNumelTail,
+            tilingHost->numel,
+            tilingHost->ubSize
+        );
     }
-    aclrtFree(tilingDevice);
 }
 
 namespace get_row_col_quant_tiling {
