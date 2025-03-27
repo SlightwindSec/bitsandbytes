@@ -38,7 +38,7 @@ def write_version_file(version, filepath="bitsandbytes/_version.py"):
 
 
 def get_version_and_write_to_file():
-    version = "0.45.1"
+    version = "0.45.3"
     write_version_file(version)
     return version
 

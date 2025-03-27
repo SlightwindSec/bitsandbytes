@@ -29,6 +29,7 @@ public:
     {
         ASSERT(GetBlockNum() != 0 && "block dim can not be zero!");
         this->blocksize = blocksize;
+        uint32_t blockIdx = (uint32_t)GetBlockIdx();
         if (coreNum - blockIdx == 1) {
             this->CurCoreFP16Num = singleCoreNumelTail;
         } else {
